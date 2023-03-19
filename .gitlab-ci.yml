@@ -1,0 +1,30 @@
+variables:
+  EXPRESS_IMAGE_NAME: hk215/k8express
+  EXPRESS_IMAGE_TAG: latest
+  REACT_IMAGE_NAME: hk215/k8react
+  REACT_IMAGE_TAG: latest
+
+stages:
+  - build
+
+build_image:
+  stage: build
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+  script:
+    - docker build -t $EXPRESS_IMAGE_NAME:$EXPRESS_IMAGE_TAG -f ./express/Dockerfile .
+    - docker push $EXPRESS_IMAGE_NAME:$EXPRESS_IMAGE_TAG
+    - docker build -t $REACT_IMAGE_NAME:$REACT_IMAGE_TAG -f ./react/Dockerfile .
+    - docker push $REACT_IMAGE_NAME:$REACT_IMAGE_TAG
+# deploy:
+#   stage: deploy
+#   before_script:
+#     - chmod 400 $SSH_KEY
+#   script:
+#     - ssh -o StrictHostKeyChecking=no -i $SSH_KEY root@161.35.223.117 "
+#       docker login -u $REGISTRY_USER -p $REGISTRY_PASS &&
+#       docker ps -aq | xargs docker stop | xargs docker rm &&
+#       docker run -d -p 5000:5000 $IMAGE_NAME:$IMAGE_TAG"
