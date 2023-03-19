@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: default
+data:
+  nginx.conf: |
+    server {
+      listen 80;
+      listen 443;
+
+      location / {
+        try_files $uri /index.html;
+        root /usr/share/nginx/html;
+        index index.html;
+      }
+    }

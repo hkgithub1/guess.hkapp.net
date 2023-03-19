@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubernetes-react-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8react
+  template:
+    metadata:
+      labels:
+        app: k8react
+    spec:
+      containers:
+        - name: k8react-container
+          image: hk215/k8react:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config

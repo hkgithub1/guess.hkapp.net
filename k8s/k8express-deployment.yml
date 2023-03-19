@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubernetes-express-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8express
+  template:
+    metadata:
+      labels:
+        app: k8express
+    spec:
+      containers:
+        - name: k8express-container
+          image: hk215/k8express:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3001

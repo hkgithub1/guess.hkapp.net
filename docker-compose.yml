@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  backend:
+    image: "hk215/k8express:latest"
+    environment:
+      - AWS_ACCESS_KEY_ID=AKIA2L2HTGRCJUXTXECO=1
+      - AWS_SECRET_ACCESS_KEY=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
+      - AWS_DEFAULT_REGION=us-east-1
+      - EXPRESS_PORT=3001
+    ports:
+      - "3001:3001"
+  frontend:
+    image: "hk215/k8react:latest"
+    environment:
+      - REACT_APP_MARVEL_API_PUBLIC_KEY=981a980d4cd03f67306c25136c7946c2
+      - REACT_APP_MARVEL_API_PRIVATE_KEY=0456cf3e28a2d77f0f71859108e2d1f4bf524fd1
+      - REACT_APP_BACKEND_API_URL=http://35.174.213.9:3001
+    ports:
+      - "80:80"
