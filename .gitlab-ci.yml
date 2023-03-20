@@ -3,9 +3,12 @@ variables:
   EXPRESS_IMAGE_TAG: latest
   REACT_IMAGE_NAME: hk215/k8react
   REACT_IMAGE_TAG: latest
+  GCP_PROJECT_ID: guess-game-381115
+  GKE_CLUSTER_NAME: Guess-Game
 
 stages:
   - build
+  - deploy
 
 build_image:
   stage: build
@@ -19,12 +22,18 @@ build_image:
     - docker push $EXPRESS_IMAGE_NAME:$EXPRESS_IMAGE_TAG
     - docker build -t $REACT_IMAGE_NAME:$REACT_IMAGE_TAG -f ./react/Dockerfile .
     - docker push $REACT_IMAGE_NAME:$REACT_IMAGE_TAG
-# deploy:
-#   stage: deploy
-#   before_script:
-#     - chmod 400 $SSH_KEY
-#   script:
-#     - ssh -o StrictHostKeyChecking=no -i $SSH_KEY root@161.35.223.117 "
-#       docker login -u $REGISTRY_USER -p $REGISTRY_PASS &&
-#       docker ps -aq | xargs docker stop | xargs docker rm &&
-#       docker run -d -p 5000:5000 $IMAGE_NAME:$IMAGE_TAG"
+deploy:
+  stage: deploy
+  image: google/cloud-sdk
+  script:
+    - echo "$SERVICE_ACCOUNT_KEY" > key.json
+    - gcloud auth activate-service-account --key-file=key.json
+    - gcloud config set project $GCP_PROJECT_ID
+    - gcloud config set container/cluster $GKE_CLUSTER_NAME
+    - gcloud config set compute/zone us-east1-b
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME --zone us-east1-b --project $GCP_PROJECT_ID
+    - kubectl apply -f ./k8s/config-map.yml
+    - kubectl apply -f ./k8s/k8express-deployment.yml
+    - kubectl apply -f ./k8s/k8express-service.yml
+    - kubectl apply -f ./k8s/k8react-deployment.yml
+    - kubectl apply -f ./k8s/k8react-service.yml
