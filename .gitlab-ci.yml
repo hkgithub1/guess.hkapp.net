@@ -4,7 +4,7 @@ variables:
   REACT_IMAGE_NAME: hk215/k8react
   REACT_IMAGE_TAG: latest
   GCP_PROJECT_ID: guess-game-381115
-  GKE_CLUSTER_NAME: Guess-Game
+  GKE_CLUSTER_NAME: guess-cluster
 
 stages:
   - build
@@ -37,3 +37,5 @@ deploy:
     - kubectl apply -f ./k8s/k8express-service.yml
     - kubectl apply -f ./k8s/k8react-deployment.yml
     - kubectl apply -f ./k8s/k8react-service.yml
+    - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.6.4/deploy/static/provider/cloud/deploy.yaml
+    - kubectl apply -f ./k8/ingress-service.yml
