@@ -38,4 +38,4 @@ deploy:
     - kubectl apply -f ./k8s/k8react-deployment.yml
     - kubectl apply -f ./k8s/k8react-service.yml
     - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.6.4/deploy/static/provider/cloud/deploy.yaml
-    - kubectl apply -f ./k8/ingress-service.yml
+    - kubectl apply -f ./k8s/ingress-service.yml
