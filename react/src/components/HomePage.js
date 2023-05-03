@@ -305,7 +305,7 @@ export default function HomePage() {
     <>
       <Grid
         container
-        height={625}
+        height="100vh"
         sx={{ backgroundImage: `url(${background})`, backgroundSize: "auto" }}
       >
         {results != 0 ? (
